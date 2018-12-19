@@ -20,9 +20,7 @@ class ProductController extends Controller{
 		}
 	}
 
-	public function mostra(){
-		$id = Request::input('id', '0');
-
+	public function mostra($id){
 		$key = DB::select('select * from produtos where id =?', [$id]);
 
 		if (empty($key)){
