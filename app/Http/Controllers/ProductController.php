@@ -3,23 +3,39 @@
 namespace estoque\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Request;
 
 class ProductController extends Controller{
 	
 	public function listProducts(){
 
-		$html = '<h1>Lista de Produtos</h1>';
-		$html.= '<ul>';
+		$produtos = DB::select('select * from produtos');
 
-		$products = DB::select('select * from produtos');
+		if( view()->exists('listagem')){
+			return view('listagem')->withProdutos($produtos);
+		}
 
-		foreach ($products as $key) {
-			$html .='<li>Name: ' .$key->nome. ', Description: '.$key->descricao.'</li>';
- 		}
+		else{
+			echo "View não encontrada!!";
+		}
+	}
 
-		$html .='</ul>';
+	public function mostra(){
+		$id = Request::input('id', '0');
 
-		return $html;
+		$key = DB::select('select * from produtos where id =?', [$id]);
+
+		if (empty($key)){
+			return "Produto não encontrado!!";
+		}
+
+		if ( view()->exists('detalhes')) {
+			return view('detalhes')->withKey($key[0]);
+		}
+
+		else{
+			echo "View não Encontrada!!";
+		}
 	}
 }
 
